@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.RoleMapper">
+
+    <update id="createIfNotExists" parameterType="java.lang.String">
+        create table if not exists ${namespace}_role
+        (
+            id           bigint unsigned not null auto_increment comment '主键',
+            gmt_created  datetime     not null comment '创建时间',
+            gmt_modified datetime     not null comment '修改时间',
+            role_id      bigint unsigned not null comment '角色id',
+            name         varchar(32)  not null comment '角色名称',
+            description  varchar(128) not null comment '角色描述',
+            is_enabled   tinyint unsigned not null comment '角色是否启用，0-禁用，1-启用',
+            primary key (id),
+            index        idx_gmtModified(gmt_modified),
+            unique uk_roleId(role_id)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='${namespace}_角色表';
+    </update>
+
+    <update id="dropIfExists" parameterType="java.lang.String">
+        drop table if exists ${namespace}_role
+    </update>
+
+    <insert id="insert" parameterType="fun.fengwk.guard.core.model.RoleDO" keyProperty="roleDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_role (gmt_created, gmt_modified, role_id, name, description, is_enabled) values
+        (#{roleDO.gmtCreated}, #{roleDO.gmtModified}, #{roleDO.roleId}, #{roleDO.name}, #{roleDO.description}, #{roleDO.isEnabled})
+    </insert>
+
+    <delete id="deleteByRoleId">
+        delete from ${namespace}_role
+        where role_id=#{roleId}
+    </delete>
+
+    <update id="updateByRoleId" parameterType="fun.fengwk.guard.core.model.RoleDO">
+        update ${namespace}_role set gmt_created=#{roleDO.gmtCreated}, gmt_modified=#{roleDO.gmtModified},
+        role_id=#{roleDO.roleId}, name=#{roleDO.name}, description=#{roleDO.description}, is_enabled=#{roleDO.isEnabled}
+        where role_id=#{roleDO.roleId}
+    </update>
+
+    <select id="findByRoleId" resultType="fun.fengwk.guard.core.model.RoleDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, role_id as roleId, name, description, is_enabled as isEnabled
+        from ${namespace}_role
+        where role_id=#{roleId}
+    </select>
+
+    <select id="page" resultType="fun.fengwk.guard.core.model.RoleDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, role_id as roleId, name, description, is_enabled as isEnabled
+        from ${namespace}_role r1 inner join (
+            select id from ${namespace}_role
+            <if test="namePrefix != null">
+                where name like concat(#{namePrefix}, '%')
+            </if>
+            limit #{offset}, #{limit}
+        ) r2 on r1.id=r2.id
+    </select>
+
+    <select id="count" resultType="long">
+        select count(*)
+        from ${namespace}_role
+        <if test="namePrefix != null">
+            where name like concat(#{namePrefix}, '%')
+        </if>
+    </select>
+
+</mapper>

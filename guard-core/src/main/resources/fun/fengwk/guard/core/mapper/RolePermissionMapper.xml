@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.RolePermissionMapper">
+
+    <update id="createIfNotExists" parameterType="java.lang.String">
+        create table if not exists ${namespace}_role_permission
+        (
+            id            bigint unsigned not null auto_increment comment '主键',
+            gmt_created   datetime not null comment '创建时间',
+            gmt_modified  datetime not null comment '修改时间',
+            role_id       bigint unsigned not null comment '角色id',
+            permission_id bigint unsigned not null comment '权限id',
+            primary key (id),
+            index         idx_gmtModified(gmt_modified),
+            unique uk_roleId_permissionId(role_id, permission_id),
+            index         idx_permissionId(permission_id)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='${namespace}_角色权限关联表';
+    </update>
+
+    <update id="dropIfExists" parameterType="java.lang.String">
+        drop table if exists ${namespace}_role_permission
+    </update>
+
+    <insert id="insertAll" parameterType="fun.fengwk.guard.core.model.RolePermissionDO" keyProperty="rolePermissionDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_role_permission (gmt_created, gmt_modified, role_id, permission_id) values
+        <foreach collection="rolePermissionDOs" item="rolePermissionDO" separator=",">
+            (#{rolePermissionDO.gmtCreated}, #{rolePermissionDO.gmtModified}, #{rolePermissionDO.roleId}, #{rolePermissionDO.permissionId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByIds">
+        delete from ${namespace}_role_permission
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="limitByRoleId" resultType="fun.fengwk.guard.core.model.RolePermissionDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, role_id as roleId, permission_id permissionId
+        from ${namespace}_role_permission
+        where role_id=#{roleId}
+        limit #{limit}
+    </select>
+
+    <select id="limitByPermissionId" resultType="fun.fengwk.guard.core.model.RolePermissionDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, role_id as roleId, permission_id permissionId
+        from ${namespace}_role_permission
+        where permission_id=#{permissionId}
+        limit #{limit}
+    </select>
+
+</mapper>

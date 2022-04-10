@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.UserNamespaceMapper">
+
+    <select id="page" resultType="fun.fengwk.guard.core.model.UserNamespaceDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, user_namespace as userNamespace,
+               description, user_system_type as userSystemType, user_system_namespace as userSystemNamespace, is_enabled as isEnabled
+        from user_namespace
+        <if test="namePrefix != null">
+            where name like concat(#{namePrefix}, '%')
+        </if>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="count" parameterType="java.lang.String" resultType="long">
+        select count(*)
+        from user_namespace
+        <if test="namePrefix != null">
+            where name like concat(#{namePrefix}, '%')
+        </if>
+    </select>
+
+</mapper>

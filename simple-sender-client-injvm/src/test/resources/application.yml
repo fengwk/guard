@@ -1,0 +1,10 @@
+spring:
+  mail:
+    host: smtp.163.com
+    username: fengwkfuntest@163.com
+    password: BVYGPORWCHJYRFLT
+    default-encoding: utf-8
+
+simple-sender:
+  from-mails:
+    - fengwkfuntest@163.com

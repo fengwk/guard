@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.sus.core.mapper.UserPropertiesMapper">
+
+    <select id="findByUserId" parameterType="long" resultType="fun.fengwk.guard.sus.core.model.UserPropertiesBO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, properties
+        from ${namespace}_user
+        where user_id=#{userId}
+    </select>
+
+</mapper>

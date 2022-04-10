@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.TokenMapper">
+
+    <update id="createIfNotExists" parameterType="java.lang.String">
+        create table if not exists ${namespace}_token
+        (
+            id                        bigint unsigned not null auto_increment comment '主键',
+            gmt_created               datetime    not null comment '创建时间',
+            gmt_modified              datetime    not null comment '修改时间',
+            access_token              varchar(32) not null comment '访问令牌',
+            gmt_access_token_expired  datetime    not null comment '访问令牌过期时间',
+            refresh_token             varchar(32) not null comment '刷新令牌',
+            gmt_refresh_token_expired datetime    not null comment '刷新令牌过期时间',
+            client_id                 varchar(32) not null comment '令牌关联的客户端id',
+            user_id                   varchar(64) not null comment '令牌关联的用户id',
+            is_revoke                 tinyint unsigned not null comment '是否已回收，0-未回收，1-已回收',
+            primary key (id),
+            index                     idx_gmtModified(gmt_modified),
+            unique uk_accessToken(access_token),
+            index                     idx_refreshToken_gmtModified(refresh_token, gmt_modified)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='${namespace}_令牌表';
+    </update>
+
+    <update id="dropIfExists" parameterType="java.lang.String">
+        drop table if exists ${namespace}_token
+    </update>
+
+    <insert id="insert" parameterType="fun.fengwk.guard.core.model.TokenDO" keyProperty="tokenDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_token (gmt_created, gmt_modified, access_token, gmt_access_token_expired, refresh_token, gmt_refresh_token_expired, client_id, user_id, is_revoke) values
+        (#{tokenDO.gmtCreated}, #{tokenDO.gmtModified}, #{tokenDO.accessToken}, #{tokenDO.gmtAccessTokenExpired},
+        #{tokenDO.refreshToken}, #{tokenDO.gmtRefreshTokenExpired}, #{tokenDO.clientId}, #{tokenDO.userId}, #{tokenDO.isRevoke})
+    </insert>
+
+    <update id="updateRevoked">
+        update ${namespace}_token set is_revoke=1, gmt_modified=now() where access_token=#{accessToken} and is_revoke=0
+    </update>
+
+    <select id="findByAccessToken" parameterType="java.lang.String" resultType="fun.fengwk.guard.core.model.TokenDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, access_token as accessToken, gmt_access_token_expired as gmtAccessTokenExpired, refresh_token as refreshToken, gmt_refresh_token_expired as gmtRefreshTokenExpired, client_id as clientId, user_id as userId, is_revoke as isRevoke
+        from ${namespace}_token
+        where access_token=#{accessToken}
+    </select>
+
+    <select id="findLastByRefreshToken" parameterType="java.lang.String" resultType="fun.fengwk.guard.core.model.TokenDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, access_token as accessToken, gmt_access_token_expired as gmtAccessTokenExpired, refresh_token as refreshToken, gmt_refresh_token_expired as gmtRefreshTokenExpired, client_id as clientId, user_id as userId, is_revoke as isRevoke
+        from ${namespace}_token
+        where refresh_token=#{refreshToken}
+        order by gmt_modified desc
+        limit 1
+    </select>
+
+</mapper>

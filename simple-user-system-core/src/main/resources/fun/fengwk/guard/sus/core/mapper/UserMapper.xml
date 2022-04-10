@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.sus.core.mapper.UserMapper">
+
+    <update id="createIfNotExists">
+        create table if not exists ${namespace}_user
+        (
+            id              bigint unsigned not null auto_increment comment '主键',
+            gmt_created     datetime not null comment '创建时间',
+            gmt_modified    datetime not null comment '修改时间',
+            version         bigint unsigned not null comment '数据版本号',
+            user_id         bigint unsigned not null comment '用户id',
+            username        varchar(32) comment '用户名',
+            password_digest varchar(64) comment '密码摘要',
+            mobile          varchar(16) comment '手机号',
+            email           varchar(320) comment '邮箱',
+            properties      text not null comment '属性表，json格式',
+            primary key (id),
+            index idx_gmtModified(gmt_modified),
+            unique uk_userId(user_id),
+            unique uk_username(username),
+            unique uk_mobile(mobile),
+            unique uk_email(email)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='${namespace}_用户表';
+    </update>
+
+    <insert id="insert" parameterType="fun.fengwk.guard.sus.core.model.UserDO" keyProperty="userDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_user (gmt_created, gmt_modified, version, user_id, username, password_digest, mobile, email, properties)
+        values (#{userDO.gmtCreated}, #{userDO.gmtModified}, #{userDO.version},
+        #{userDO.userId}, #{userDO.username}, #{userDO.passwordDigest}, #{userDO.mobile}, #{userDO.email}, #{userDO.properties})
+    </insert>
+
+    <update id="updateByUserIdWithVersionIfNecessary" parameterType="fun.fengwk.guard.sus.core.model.UserDO">
+        update ${namespace}_user set gmt_created=#{userDO.gmtCreated}, gmt_modified=#{userDO.gmtModified}, version=version+1,
+        username=#{userDO.username}, password_digest=#{userDO.passwordDigest}, mobile=#{userDO.mobile}, email=#{userDO.email}, properties=#{userDO.properties}
+        where user_id=#{userDO.userId}
+        <if test="userDO.version != null">
+            and version=#{userDO.version}
+        </if>
+    </update>
+
+    <update id="updateByUserIdSelectiveWithVersionIfNecessary" parameterType="fun.fengwk.guard.sus.core.model.UserDO">
+        update ${namespace}_user set
+        <trim suffixOverrides=",">
+            <if test="userDO.gmtCreated != null">gmt_created=#{userDO.gmtCreated},</if>
+            <if test="userDO.gmtModified != null">gmt_modified=#{userDO.gmtModified},</if>
+            version=version+1,
+            <if test="userDO.username != null">username=#{userDO.username},</if>
+            <if test="userDO.passwordDigest != null">password_digest=#{userDO.passwordDigest},</if>
+            <if test="userDO.mobile != null">mobile=#{userDO.mobile},</if>
+            <if test="userDO.email != null">email=#{userDO.email},</if>
+            <if test="userDO.properties != null">properties=#{userDO.properties},</if>
+        </trim>
+        where user_id=#{userDO.userId}
+        <if test="userDO.version != null">
+            and version=#{userDO.version}
+        </if>
+    </update>
+
+    <delete id="deleteByUserIdAndVersion">
+        delete from ${namespace}_user
+        where user_id=#{userId}
+        <if test="version != null">
+            and version=#{version}
+        </if>
+    </delete>
+
+    <select id="findByUserIdAndVersion" resultType="fun.fengwk.guard.sus.core.model.UserDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, username, password_digest as passwordDigest, mobile, email, properties
+        from ${namespace}_user
+        where user_id=#{userId}
+        <if test="version != null">
+            and version=#{version}
+        </if>
+    </select>
+
+    <select id="findByUsername" parameterType="java.lang.String" resultType="fun.fengwk.guard.sus.core.model.UserDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, username, password_digest as passwordDigest, mobile, email, properties
+        from ${namespace}_user
+        where username=#{username}
+    </select>
+
+    <select id="findByEmail" parameterType="java.lang.String" resultType="fun.fengwk.guard.sus.core.model.UserDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, username, password_digest as passwordDigest, mobile, email, properties
+        from ${namespace}_user
+        where email=#{email}
+    </select>
+
+    <select id="findByMobile" parameterType="java.lang.String" resultType="fun.fengwk.guard.sus.core.model.UserDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, username, password_digest as passwordDigest, mobile, email, properties
+        from ${namespace}_user
+        where mobile=#{mobile}
+    </select>
+
+    <select id="page" resultType="fun.fengwk.guard.sus.core.model.UserDO">
+        select
+        u1.id, gmt_created as gmtCreated, gmt_modified as gmtModified, version, user_id as userId, username, password_digest as passwordDigest, mobile, email, properties
+        from ${namespace}_user u1 inner join (
+            select id from ${namespace}_user
+            <where>
+                <if test="userQuery != null and userQuery.usernamePrefix != null">
+                    and username like concat(#{userQuery.usernamePrefix}, '%')
+                </if>
+                <if test="userQuery != null and userQuery.mobilePrefix != null">
+                    and mobile like concat(#{userQuery.mobilePrefix}, '%')
+                </if>
+                <if test="userQuery != null and userQuery.emailPredix != null">
+                    and email like concat(#{userQuery.emailPredix}, '%')
+                </if>
+            </where>
+            limit #{offset}, #{limit}
+        ) u2 on u1.id=u2.id
+    </select>
+
+    <select id="count" resultType="long">
+        select count(*) from ${namespace}_user
+        <where>
+            <if test="userQuery != null and userQuery.usernamePrefix != null">
+                and username like concat(#{userQuery.usernamePrefix}, '%')
+            </if>
+            <if test="userQuery != null and userQuery.mobilePrefix != null">
+                and mobile like concat(#{userQuery.mobilePrefix}, '%')
+            </if>
+            <if test="userQuery != null and userQuery.emailPredix != null">
+                and email like concat(#{userQuery.emailPredix}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.PermissionMapper">
+
+    <update id="createIfNotExists" parameterType="java.lang.String">
+        create table if not exists ${namespace}_permission
+        (
+            id                  bigint unsigned not null auto_increment comment '主键',
+            gmt_created          datetime     not null comment '创建时间',
+            gmt_modified        datetime     not null comment '修改时间',
+            permission_id       bigint unsigned not null comment '权限id',
+            name                varchar(32)  not null comment '权限名称',
+            description         varchar(128) not null comment '权限描述',
+            action              varchar(16)  not null comment '动作，如read、write',
+            resource_descriptor varchar(128) not null comment '资源描述符',
+            is_enabled          tinyint unsigned not null comment '权限是否启用，0-禁用，1-启用',
+            primary key (id),
+            index               idx_gmtModified(gmt_modified),
+            unique uk_permissionId(permission_id)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='权限表';
+    </update>
+
+    <update id="dropIfExists" parameterType="java.lang.String">
+        drop table if exists ${namespace}_permission
+    </update>
+
+    <insert id="insert" parameterType="fun.fengwk.guard.core.model.PermissionDO" keyProperty="permissionDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_permission (gmt_created, gmt_modified, permission_id, name, description, action, resource_descriptor, is_enabled) values
+            (#{permissionDO.gmtCreated}, #{permissionDO.gmtModified}, #{permissionDO.permissionId}, #{permissionDO.name}, #{permissionDO.description}, #{permissionDO.action}, #{permissionDO.resourceDescriptor}, #{permissionDO.isEnabled})
+    </insert>
+
+    <delete id="deleteByPermissionId">
+        delete from ${namespace}_permission
+        where permission_id=#{permissionId}
+    </delete>
+
+    <update id="updateByPermissionId" parameterType="fun.fengwk.guard.core.model.PermissionDO">
+        update ${namespace}_permission set gmt_created=#{permissionDO.gmtCreated}, gmt_modified=#{permissionDO.gmtModified},
+        permission_id=#{permissionDO.permissionId}, name=#{permissionDO.name}, description=#{permissionDO.description}, action=#{permissionDO.action},
+        resource_descriptor=#{permissionDO.resourceDescriptor}, is_enabled=#{permissionDO.isEnabled}
+        where permission_id=#{permissionId}
+    </update>
+
+    <select id="findByPermissionId" resultType="fun.fengwk.guard.core.model.PermissionDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, permission_id as permissionId, name, description, action, resource_descriptor as resourceDescriptor, is_enabled as isEnabled
+        from ${namespace}_permission
+        where permission_id=#{permissionId}
+    </select>
+
+    <select id="page" resultType="fun.fengwk.guard.core.model.PermissionDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, permission_id as permissionId, name, description, action, resource_descriptor as resourceDescriptor, is_enabled as isEnabled
+        from ${namespace}_permission p1 inner join (
+            select id from ${namespace}_permission
+            <if test="namePrefix != null">
+                where name like concat(#{namePrefix}, '%')
+            </if>
+            limit #{offset}, #{limit}
+        ) p2 on p1.id=p2.id
+    </select>
+
+    <select id="count" resultType="long">
+        select count(*)
+        from ${namespace}_permission
+        <if test="namePrefix != null">
+            where name like concat(#{namePrefix}, '%')
+        </if>
+    </select>
+
+</mapper>

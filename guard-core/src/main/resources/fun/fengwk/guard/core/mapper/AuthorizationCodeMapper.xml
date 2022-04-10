@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun.fengwk.guard.core.mapper.AuthorizationCodeMapper">
+
+    <update id="createIfNotExists" parameterType="java.lang.String">
+        create table if not exists ${namespace}_authorization_code
+        (
+            id           bigint unsigned not null auto_increment comment '主键',
+            gmt_created  datetime      not null comment '创建时间',
+            gmt_modified datetime      not null comment '修改时间',
+            code         varchar(32)   not null comment '授权码',
+            user_id      varchar(64)   not null comment '授权码关联的用户id',
+            client_id    varchar(32)   not null comment '授权码关联的客户端id',
+            redirect_uri varchar(1024) not null comment '重定向地址',
+            scope        varchar(256)  not null comment '申请的权限范围',
+            gmt_expired  datetime      not null comment '过期时间',
+            is_used      tinyint unsigned not null comment '是否已使用，0-未使用，1-已使用',
+            primary key (id),
+            index        idx_gmtModified(gmt_modified),
+            unique uk_code(code)
+        ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_bin comment='${namespace}_授权码表';
+    </update>
+
+    <update id="dropIfExists" parameterType="java.lang.String">
+        drop table if exists ${namespace}_authorization_code
+    </update>
+
+    <insert id="insert" parameterType="fun.fengwk.guard.core.model.AuthorizationCodeDO" keyProperty="authorizationCodeDO.id" useGeneratedKeys="true">
+        insert into ${namespace}_authorization_code (id, gmt_created, gmt_modified, code, user_id, client_id, redirect_uri, scope, gmt_expired, is_used) values
+            (#{authorizationCodeDO.id}, #{authorizationCodeDO.gmtCreated}, #{authorizationCodeDO.gmtModified},
+            #{authorizationCodeDO.code}, #{authorizationCodeDO.userId}, #{authorizationCodeDO.clientId},
+            #{authorizationCodeDO.redirectUri}, #{authorizationCodeDO.scope},
+            #{authorizationCodeDO.gmtExpired}, #{authorizationCodeDO.isUsed})
+    </insert>
+
+    <update id="updateUsed">
+        update ${namespace}_authorization_code set is_used=1, gmt_modified=now() where code=#{code} and is_used=0
+    </update>
+
+    <select id="findByCode" resultType="fun.fengwk.guard.core.model.AuthorizationCodeDO">
+        select id, gmt_created as gmtCreated, gmt_modified as gmtModified, code, user_id as userId, client_id as clientId, redirect_uri as redirectUri, scope, gmt_expired as gmtExpired, is_used as isUsed
+        from ${namespace}_authorization_code
+        where code=#{code}
+    </select>
+
+</mapper>
