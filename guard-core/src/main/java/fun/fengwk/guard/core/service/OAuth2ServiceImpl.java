@@ -1,7 +1,7 @@
 package fun.fengwk.guard.core.service;
 
-import fun.fengwk.convention4j.api.code.ErrorCodeFactory;
 import fun.fengwk.convention4j.common.ConvertUtils;
+import fun.fengwk.convention4j.common.code.ErrorCodeFactory;
 import fun.fengwk.guard.aus.AbstractUserSystem;
 import fun.fengwk.guard.aus.model.UserIdentityView;
 import fun.fengwk.guard.aus.util.PasswordDigester;

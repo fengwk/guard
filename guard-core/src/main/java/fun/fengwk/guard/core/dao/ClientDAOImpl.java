@@ -1,8 +1,8 @@
 package fun.fengwk.guard.core.dao;
 
-import fun.fengwk.convention4j.api.page.Page;
-import fun.fengwk.convention4j.api.page.PageQuery;
-import fun.fengwk.convention4j.api.page.Pages;
+import fun.fengwk.convention4j.common.page.Page;
+import fun.fengwk.convention4j.common.page.PageQuery;
+import fun.fengwk.convention4j.common.page.Pages;
 import fun.fengwk.guard.core.mapper.ClientMapper;
 import fun.fengwk.guard.core.model.ClientDO;
 import org.springframework.stereotype.Component;

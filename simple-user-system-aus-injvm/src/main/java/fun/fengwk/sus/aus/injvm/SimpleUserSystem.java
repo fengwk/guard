@@ -1,10 +1,10 @@
 package fun.fengwk.sus.aus.injvm;
 
 import com.google.common.base.Preconditions;
-import fun.fengwk.convention4j.api.page.LitePage;
-import fun.fengwk.convention4j.api.page.LitePageQuery;
-import fun.fengwk.convention4j.api.page.Page;
-import fun.fengwk.convention4j.api.page.PageQuery;
+import fun.fengwk.convention4j.common.page.LitePage;
+import fun.fengwk.convention4j.common.page.LitePageQuery;
+import fun.fengwk.convention4j.common.page.Page;
+import fun.fengwk.convention4j.common.page.PageQuery;
 import fun.fengwk.guard.aus.AbstractUserSystem;
 import fun.fengwk.guard.aus.model.UserCreator;
 import fun.fengwk.guard.aus.model.UserIdentityView;

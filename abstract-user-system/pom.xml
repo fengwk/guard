@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>fun.fengwk.convention4j</groupId>
-            <artifactId>convention4j-api</artifactId>
+            <artifactId>convention4j-common</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

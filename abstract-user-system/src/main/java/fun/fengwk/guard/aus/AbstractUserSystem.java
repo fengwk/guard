@@ -1,9 +1,9 @@
 package fun.fengwk.guard.aus;
 
-import fun.fengwk.convention4j.api.page.LitePage;
-import fun.fengwk.convention4j.api.page.LitePageQuery;
-import fun.fengwk.convention4j.api.page.Page;
-import fun.fengwk.convention4j.api.page.PageQuery;
+import fun.fengwk.convention4j.common.page.LitePage;
+import fun.fengwk.convention4j.common.page.LitePageQuery;
+import fun.fengwk.convention4j.common.page.Page;
+import fun.fengwk.convention4j.common.page.PageQuery;
 import fun.fengwk.guard.aus.model.UserCreator;
 import fun.fengwk.guard.aus.model.UserIdentityView;
 import fun.fengwk.guard.aus.model.UserModifier;

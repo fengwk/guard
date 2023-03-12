@@ -1,7 +1,7 @@
 package fun.fengwk.guard.share.constant;
 
-import fun.fengwk.convention4j.api.code.CodeTable;
-import fun.fengwk.convention4j.api.code.ErrorCode;
+import fun.fengwk.convention4j.common.code.CodeTable;
+import fun.fengwk.convention4j.common.code.ErrorCode;
 
 /**
  * @author fengwk

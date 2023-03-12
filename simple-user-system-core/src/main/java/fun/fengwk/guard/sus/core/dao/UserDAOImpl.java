@@ -1,10 +1,10 @@
 package fun.fengwk.guard.sus.core.dao;
 
-import fun.fengwk.convention4j.api.page.LitePage;
-import fun.fengwk.convention4j.api.page.LitePageQuery;
-import fun.fengwk.convention4j.api.page.Page;
-import fun.fengwk.convention4j.api.page.PageQuery;
-import fun.fengwk.convention4j.api.page.Pages;
+import fun.fengwk.convention4j.common.page.LitePage;
+import fun.fengwk.convention4j.common.page.LitePageQuery;
+import fun.fengwk.convention4j.common.page.Page;
+import fun.fengwk.convention4j.common.page.PageQuery;
+import fun.fengwk.convention4j.common.page.Pages;
 import fun.fengwk.guard.sus.core.mapper.UserMapper;
 import fun.fengwk.guard.sus.core.model.UserDO;
 import fun.fengwk.guard.sus.share.model.UserQuery;

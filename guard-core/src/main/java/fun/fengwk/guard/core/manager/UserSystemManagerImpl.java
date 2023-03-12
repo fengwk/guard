@@ -2,15 +2,15 @@ package fun.fengwk.guard.core.manager;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import fun.fengwk.convention4j.api.code.CommonCodeTable;
-import fun.fengwk.convention4j.api.code.ErrorCode;
-import fun.fengwk.convention4j.api.code.ErrorCodeFactory;
 import fun.fengwk.convention4j.common.ConvertUtils;
-import fun.fengwk.guard.share.constant.GuardCodeTable;
+import fun.fengwk.convention4j.common.code.CommonCodeTable;
+import fun.fengwk.convention4j.common.code.ErrorCode;
+import fun.fengwk.convention4j.common.code.ErrorCodeFactory;
 import fun.fengwk.guard.aus.AbstractUserSystem;
 import fun.fengwk.guard.aus.UserSystemFactoryRegistry;
 import fun.fengwk.guard.core.dao.UserNamespaceDAO;
 import fun.fengwk.guard.core.model.UserNamespaceDO;
+import fun.fengwk.guard.share.constant.GuardCodeTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

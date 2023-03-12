@@ -1,7 +1,7 @@
 package fun.fengwk.guard.core.dao;
 
-import fun.fengwk.convention4j.api.page.Page;
-import fun.fengwk.convention4j.api.page.PageQuery;
+import fun.fengwk.convention4j.common.page.Page;
+import fun.fengwk.convention4j.common.page.PageQuery;
 import fun.fengwk.guard.core.model.PermissionDO;
 
 import javax.validation.constraints.NotNull;

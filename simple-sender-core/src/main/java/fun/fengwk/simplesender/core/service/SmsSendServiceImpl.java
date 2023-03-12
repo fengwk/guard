@@ -1,7 +1,7 @@
 package fun.fengwk.simplesender.core.service;
 
-import fun.fengwk.convention4j.api.code.CommonCodeTable;
-import fun.fengwk.convention4j.api.code.ErrorCodeFactory;
+import fun.fengwk.convention4j.common.code.CommonCodeTable;
+import fun.fengwk.convention4j.common.code.ErrorCodeFactory;
 import fun.fengwk.simplesender.share.model.SmsDTO;
 import org.springframework.stereotype.Service;
 

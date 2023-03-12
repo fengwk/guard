@@ -1,6 +1,6 @@
 package fun.fengwk.simplesender.client;
 
-import fun.fengwk.convention4j.api.result.Result;
+import fun.fengwk.convention4j.common.result.Result;
 import fun.fengwk.simplesender.share.model.EmailDTO;
 import fun.fengwk.simplesender.share.model.SmsDTO;
 

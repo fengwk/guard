@@ -1,7 +1,7 @@
 package fun.fengwk.simplesender.client.injvm;
 
-import fun.fengwk.convention4j.api.result.Result;
-import fun.fengwk.convention4j.api.result.Results;
+import fun.fengwk.convention4j.common.result.Result;
+import fun.fengwk.convention4j.common.result.Results;
 import fun.fengwk.convention4j.springboot.starter.result.AutoResultExceptionHandler;
 import fun.fengwk.simplesender.client.SimpleSenderClient;
 import fun.fengwk.simplesender.core.service.EmailSendService;
